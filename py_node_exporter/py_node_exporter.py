@@ -7,10 +7,10 @@ from prometheus_client import MetricsHandler, exposition
 
 from .collector.ccontroller import CController
 
-__version__ = '0.3.5'
+__version__ = '1.0.0'
 
 
-class NodeExporterServer(MetricsHandler):
+class PyNodeExporterServer(MetricsHandler):
     def do_GET(self):
         if urlparse(self.path).path != '/metrics':
             self.send_response(200)
@@ -45,10 +45,10 @@ class NodeExporterServer(MetricsHandler):
         self.wfile.write(output)
 
 
-def run(server_class=HTTPServer, handler_class=NodeExporterServer, port=9100):
+def run(server_class=HTTPServer, handler_class=PyNodeExporterServer, port=9100):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    print('Starting node_exporter port{}...\n'.format(port))
+    print('Starting py_node_exporter port{}...\n'.format(port))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

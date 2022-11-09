@@ -14,13 +14,15 @@ class CpuCollector(Collector):
 
     def collect(self):
         metric = CounterMetricFamily('{}_{}_seconds_total'.format(
-            NAMESPACE, self.name), 'Seconds the cpus spent in each mode.',  labels=["cpu", "mode"])
+            NAMESPACE, self.name), 'Seconds the cpus spent in each mode.', labels=["cpu", "mode"])
         with open('/proc/stat', 'r') as f:
             for line in f:
                 s = search(
-                    r'^cpu([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+', line)
+                    r'^cpu([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+',
+                    line)
                 if s:
-                    cpuid, user, nice, system, idle, iowait, irq, softirq, steal = s.group(1), s.group(2),  s.group(3), s.group(4), s.group(
+                    cpuid, user, nice, system, idle, iowait, irq, softirq, steal = s.group(1), s.group(2), s.group(
+                        3), s.group(4), s.group(
                         5), s.group(6), s.group(7), s.group(8), s.group(9)
                     self.metric(metric, float(user), cpuid, "user")
                     self.metric(metric, float(nice), cpuid, "nice")

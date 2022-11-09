@@ -6,7 +6,6 @@ from prometheus_client.core import GaugeMetricFamily
 from .namespace import NAMESPACE
 from .collector import Collector
 
-
 defIgnoredMountPoints = "^/(dev|proc|sys|var/lib/docker/.+)($|/)"
 defIgnoredFSTypes = "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
 
@@ -22,7 +21,8 @@ def parseFilesystemLabels(fslines):
 
 
 def generateFilesystemMetrics(subsystem):
-    return [GaugeMetricFamily(name="{}_{}_{}".format(NAMESPACE, subsystem, 'size_bytes'), labels=["device", "mountpoint", "fstype"], documentation=""),
+    return [GaugeMetricFamily(name="{}_{}_{}".format(NAMESPACE, subsystem, 'size_bytes'),
+                              labels=["device", "mountpoint", "fstype"], documentation=""),
             GaugeMetricFamily(name="{}_{}_{}".format(NAMESPACE, subsystem, 'free_bytes'),
                               labels=["device", "mountpoint", "fstype"], documentation=""),
             GaugeMetricFamily(name="{}_{}_{}".format(NAMESPACE, subsystem, 'avail_bytes'),
@@ -48,8 +48,8 @@ class FilesystemCollector(Collector):
                 metrics[2].add_metric([labels["device"], labels["mountPoint"],
                                        labels["fsType"]], float(st.f_bavail * st.f_bsize))
                 metrics[3].add_metric([labels["device"], labels["mountPoint"],
-                                       labels["fsType"]],  st.f_files)
+                                       labels["fsType"]], st.f_files)
                 metrics[4].add_metric([labels["device"], labels["mountPoint"],
-                                       labels["fsType"]],  st.f_files * st.f_ffree)
+                                       labels["fsType"]], st.f_files * st.f_ffree)
         for m in metrics:
             yield m
